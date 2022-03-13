@@ -38,5 +38,5 @@ public class Item {
 
   @ManyToOne
   @ToString.Exclude
-  private Order order;
+  private CustomerOrder customerOrder;
 }

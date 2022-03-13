@@ -17,7 +17,7 @@ import java.util.List;
  * @create 2022/3/13 21:22
  */
 @Entity @Getter @Setter
-public class Order {
+public class CustomerOrder {
   /**
    * 订单id
    * 主键
@@ -42,7 +42,7 @@ public class Order {
   /**
    * 订单内商品
    */
-  @OneToMany(mappedBy = "order")
+  @OneToMany(mappedBy = "customerOrder")
   @ToString.Exclude
   List<Item> items=new ArrayList<>();
 }

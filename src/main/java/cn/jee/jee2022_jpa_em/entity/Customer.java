@@ -47,5 +47,5 @@ public class Customer {
    */
   @OneToMany(mappedBy = "customer")
   @ToString.Exclude
-  private List<Order> orders=new ArrayList<>();
+  private List<CustomerOrder> customerOrders =new ArrayList<>();
 }
