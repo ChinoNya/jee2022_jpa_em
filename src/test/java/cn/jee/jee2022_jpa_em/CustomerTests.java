@@ -8,7 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 
@@ -69,5 +75,26 @@ public class CustomerTests {
     em.remove(customer);
   }
 
+  /**
+   * 查询年龄大于30的林姓女性客户
+   * 使用CriteriaBuilder构建复杂where条件
+   */
+  @Test
+  @Transactional
+  void selectByLastName(){
+    CriteriaBuilder cb=em.getCriteriaBuilder();
+    CriteriaQuery<Customer> cq=cb.createQuery(Customer.class);
+    //定义where条件
+    Root<Customer> root=cq.from(Customer.class);
+    List<Predicate> predicates=new ArrayList<>();
+    predicates.add(cb.like(root.get("name"),"林%"));
+    predicates.add(cb.equal(root.get("sex"),"女"));
+    predicates.add(cb.ge(root.get("age"),30));
+    cq.where(predicates.toArray(Predicate[]::new));
 
+    cq.orderBy(cb.asc(root.get("id")));
+
+    List<Customer> res=em.createQuery(cq).getResultList();
+    log.debug("{}",res);
+  }
 }
