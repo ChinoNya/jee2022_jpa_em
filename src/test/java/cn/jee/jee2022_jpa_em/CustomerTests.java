@@ -16,10 +16,8 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.time.LocalTime;
+import java.util.*;
 
 
 /**
@@ -84,7 +82,6 @@ public class CustomerTests {
    * 使用CriteriaBuilder构建复杂where条件
    */
   @Test
-  @Transactional
   void selectByCriteriaBuilder() {
     CriteriaBuilder cb = em.getCriteriaBuilder();
     CriteriaQuery<Customer> cq = cb.createQuery(Customer.class);
@@ -106,7 +103,6 @@ public class CustomerTests {
    * 显示所有客户
    */
   @Test
-  @Transactional
   void selectAll() {
     List<Customer> res = em.createQuery("from Customer", Customer.class).getResultList();
     log.debug("{}", res);
@@ -116,7 +112,6 @@ public class CustomerTests {
    * 模糊查询林姓客户
    */
   @Test
-  @Transactional
   void selectByLastName() {
     List<Customer> res = em.createQuery("from Customer where name like '林%'").getResultList();
     log.debug("{}", res);
@@ -126,7 +121,6 @@ public class CustomerTests {
    * 使用Tuple返回部分值
    */
   @Test
-  @Transactional
   void selectByTuple() {
     List<Tuple> res = em.createQuery("select customer.id,customer.name from Customer customer", Tuple.class).getResultList();
     res.forEach(tuple -> log.debug("id:{} name:{}", tuple.get(0), tuple.get(1)));
@@ -141,9 +135,22 @@ public class CustomerTests {
    * 返回id、姓名
    */
   @Test
-  @Transactional
   void selectByDTO(){
     Optional<CustomerDTO> customerDTO=customerDao.findById(1L,CustomerDTO.class);
     log.debug("{}",customerDTO);
+  }
+
+  /**
+   * 修改
+   * 持久化状态的自动保存
+   *  在@Transactional注释的方法处于持久化上下文中
+   *  此状态下的修改将自动保存
+   */
+  @Test
+  @Rollback(false)
+  @Transactional
+  void setCustomer(){
+    Customer customer=em.find(Customer.class,1L);
+    customer.setName(LocalTime.now().toString());
   }
 }
