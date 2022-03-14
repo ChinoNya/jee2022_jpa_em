@@ -16,7 +16,7 @@ import java.util.List;
  * @create 2022/3/13 21:21
  */
 
-@Entity @Getter @Setter
+@Entity @Getter @Setter @ToString
 public class Customer {
 
   /**
